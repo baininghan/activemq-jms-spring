@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="activemq-jms-spring"
+  id="myeclipse.1438416999285"
+  context-root="/activemq-jms-spring"
+  j2ee-spec="5.0"
+  archive="activemq-jms-spring.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

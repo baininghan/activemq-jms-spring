@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    
+    <!-- 配置带连接池的工厂 -->
+    <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+        destroy-method="stop">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL">
+                    <value>tcp://127.0.0.1:61616</value>
+                </property>
+            </bean>
+        </property>
+        <property name="maxConnections" value="100"></property>
+    </bean>
+    
+    <!--创建连接工厂 -->
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    	<property name="brokerURL" value="tcp://localhost:61616"></property>
+    </bean>
+    
+    <!-- 声明ActiveMQ消息目标,目标可以是一个队列，也可以是一个主题ActiveMQTopic -->
+	<bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="jms.queue" />
+	</bean>
+	
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+<!-- 		<property name="connectionFactory" ref="jmsFactory" /> -->
+		<property name="defaultDestination" ref="destination" />
+		<property name="receiveTimeout" value="600" />
+	</bean>
+	
+	<!-- 业务对象 -->
+	<!-- 生产者 -->
+	<bean id="sender" class="com.fancye.sender.Sender">
+		<property name="jmsTemplate" ref="jmsTemplate"></property>
+	</bean>
+	<!-- 消费者 -->
+	<bean id="receiver" class="com.fancye.receiver.Receiver">
+		<property name="jmsTemplate" ref="jmsTemplate"></property>
+	</bean>
+	
+ </beans>
